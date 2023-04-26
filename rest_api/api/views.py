@@ -178,3 +178,41 @@ class RUDStudent(GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyMo
 
     def delete(self, request, *args, **kwarges):
         return self.destroy (request, *args, **kwarges)
+
+
+# List API View
+
+from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView,DestroyAPIView
+
+class StudentList(ListAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentCreate(CreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentRetrive(RetrieveAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentUpdate(UpdateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentDelete(DestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+# List API View in One
+
+from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+
+class StudentLC(ListCreateAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
+class StudentRUD(RetrieveUpdateDestroyAPIView):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+

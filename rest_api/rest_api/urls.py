@@ -27,4 +27,19 @@ urlpatterns = [
     path('gstudentapi/', views.LCStudent.as_view()),
     path('gstudentapi/<int:pk>/', views.RUDStudent.as_view()),
 
+# List API View
+    
+    path('lstudentapi/', views.StudentList.as_view()),
+    path('cstudentapi/', views.StudentCreate.as_view()),
+    path('rstudentapi/<int:pk>/', views.StudentRetrive.as_view()),
+    path('ustudentapi/<int:pk>/', views.StudentUpdate.as_view()),
+    path('dstudentapi/<int:pk>/', views.StudentDelete.as_view()),
+    
+
+
+# List API View One
+
+    path('lcstudentapi/', views.StudentLC.as_view()),
+    path('rudstudentapi/<int:pk>/', views.StudentRUD.as_view()),
+
 ]
