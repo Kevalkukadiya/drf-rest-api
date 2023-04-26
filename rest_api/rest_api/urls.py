@@ -1,21 +1,30 @@
-"""rest_api URL Configuration
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/4.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
 from django.contrib import admin
 from django.urls import path
+from api import views
 
+# Function Based 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('studentapi/', views.student_api),
+    path('studentapi/<int:pk>/', views.student_api),
+
+
+# CLass Based
+    path('classstudentapi/', views.StudentAPI.as_view()),
+    path('classstudentapi/<int:pk>/', views.StudentAPI.as_view()),
+
+#GenericAPIView and  Model Mixin CRUD
+    
+    path('gstudentapil/', views.StudentList.as_view()),
+    path('gstudentapic/', views.StudentCreate.as_view()),
+    path('gstudentapir/<int:pk>/', views.StudentRetrive.as_view()),
+    path('gstudentapiu/<int:pk>/', views.StudentUpdate.as_view()),
+    path('gstudentapid/<int:pk>/', views.StudentDestroy.as_view()),
+    
+
+# Generic View and Model in One
+
+    path('gstudentapi/', views.LCStudent.as_view()),
+    path('gstudentapi/<int:pk>/', views.RUDStudent.as_view()),
+
 ]
