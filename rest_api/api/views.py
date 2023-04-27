@@ -216,3 +216,84 @@ class StudentRUD(RetrieveUpdateDestroyAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
 
+
+
+# ViewSet - 12
+
+from rest_framework import viewsets
+from rest_framework import status
+class StudentViewSet(viewsets.ViewSet):
+    def list(self, request):
+        stu = Student.objects.all()
+        serializer = StudentSerializer(stu, many=True)
+        return Response(serializer.data)
+
+
+    def retrieve (self,request, pk=None):
+        id = pk
+        if id is not None:
+            stu = Student.objects.get(id=id)
+            serializer = StudentSerializer(stu)
+            return Response(serializer.data)
+
+
+    def create(self, request):
+        serializer = StudentSerializer(data=request.data)
+        print(request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
+        
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    
+    def update(self,request, pk):
+        id = pk
+        stu = Student.objects.get(pk=id)
+        serializer = StudentSerializer(stu, data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg':'Complete Data Updatec'})
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+    def partial_update(self, request, pk):
+        id = pk
+        stu = Student.objects.get(pk=id)
+        serializer = StudentSerializer(stu, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response({'msg':'PArtial Data Updatec'})
+
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    def destroy(Self,request, pk):
+        id = pk
+        stu = Student.objects.get(pk=id)
+        stu.delete()
+        return Response({'msg':'Data Deleted'})
+
+
+# Model Viewset
+
+from rest_framework import viewsets
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny , IsAdminUser
+
+
+class StudentModelViewSet(viewsets.ModelViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+    authentication_classes = [BasicAuthentication]
+    # permission_classes = [IsAuthenticated]
+    # permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
+    
+
+# Read only Model Viewset
+
+class StudentReadonlyModelViewSet(viewsets.ReadOnlyModelViewSet):
+    queryset = Student.objects.all()
+    serializer_class = StudentSerializer
+
