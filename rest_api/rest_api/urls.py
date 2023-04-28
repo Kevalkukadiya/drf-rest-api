@@ -4,13 +4,12 @@ from api import views
 
 from rest_framework.routers import DefaultRouter
 
-router = DefaultRouter()
+
 
 # ViewSet
 # router.register('vstudentapi', views.StudentViewSet,basename='student')
 
 # Model View Set
-router.register('mstudentapi', views.StudentModelViewSet,basename='student')
 
 
 # router.register('mstudentapi', views.StudentReadonlyModelViewSet,basename='student')
@@ -19,6 +18,7 @@ router.register('mstudentapi', views.StudentModelViewSet,basename='student')
 # Function Based 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
     path('studentapi/', views.student_api),
     path('studentapi/<int:pk>/', views.student_api),
 
@@ -58,6 +58,7 @@ urlpatterns = [
 
 
 # ViewSet - 12
-    path('', include(router.urls)),
+
+    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
 
 ]

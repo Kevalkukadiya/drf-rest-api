@@ -1,11 +1,15 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from api.models import Student
 from api.serializers import StudentSerializer
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Function Based CRUD
 @api_view(['GET', 'POST', 'PUT', 'PATCH','DELETE'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def student_api(request, pk=None):
     if request.method == 'GET':
         id = pk
@@ -239,7 +243,6 @@ class StudentViewSet(viewsets.ViewSet):
 
     def create(self, request):
         serializer = StudentSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
@@ -278,17 +281,25 @@ class StudentViewSet(viewsets.ViewSet):
 # Model Viewset
 
 from rest_framework import viewsets
-from rest_framework.authentication import BasicAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny , IsAdminUser
-
+from rest_framework.authentication import BasicAuthentication, SessionAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny , IsAdminUser, IsAuthenticatedOrReadOnly,DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
+from api.permission import MyPermission
+from api.auth import CustomAuthentication
 
 class StudentModelViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    authentication_classes = [BasicAuthentication]
-    # permission_classes = [IsAuthenticated]
+    # authentication_classes = [BasicAuthentication]
+    # authentication_classes = [SessionAuthentication]
+    authentication_classes = [CustomAuthentication]
+    permission_classes = [IsAuthenticated]
     # permission_classes = [AllowAny]
-    permission_classes = [IsAdminUser]
+    # permission_classes = [IsAdminUser]
+    # permission_classes = [IsAuthenticatedOrReadOnly]
+    # permission_classes = [DjangoModelPermissions]
+    # permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    # permission_classes = [MyPermission]
+
     
 
 # Read only Model Viewset
