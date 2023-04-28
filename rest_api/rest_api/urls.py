@@ -1,6 +1,20 @@
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
 from api import views
+
+from rest_framework.routers import DefaultRouter
+
+router = DefaultRouter()
+
+# ViewSet
+# router.register('vstudentapi', views.StudentViewSet,basename='student')
+
+# Model View Set
+router.register('mstudentapi', views.StudentModelViewSet,basename='student')
+
+
+# router.register('mstudentapi', views.StudentReadonlyModelViewSet,basename='student')
+
 
 # Function Based 
 urlpatterns = [
@@ -41,5 +55,9 @@ urlpatterns = [
 
     path('lcstudentapi/', views.StudentLC.as_view()),
     path('rudstudentapi/<int:pk>/', views.StudentRUD.as_view()),
+
+
+# ViewSet - 12
+    path('', include(router.urls)),
 
 ]
