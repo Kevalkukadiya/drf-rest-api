@@ -6,7 +6,8 @@ class CustomAuthentication(BasicAuthentication):
     def authenticate(self, request):
         username = request.GET.get('username')
         if username is None:
-            return None
+            raise AuthenticationFailed('Please provide username')
+
         try:
             user = User.objects.get(username=username)
         except User.DoesNotExist:
