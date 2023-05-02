@@ -1,11 +1,15 @@
 from django.shortcuts import render
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, authentication_classes, permission_classes
 from rest_framework.response import Response
 from api.models import Student
 from api.serializers import StudentSerializer
+from rest_framework.authentication import BasicAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 # Function Based CRUD
 @api_view(['GET', 'POST', 'PUT', 'PATCH','DELETE'])
+@authentication_classes([BasicAuthentication])
+@permission_classes([IsAuthenticated])
 def student_api(request, pk=None):
     if request.method == 'GET':
         id = pk
@@ -183,6 +187,10 @@ class RUDStudent(GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyMo
 # List API View
 
 from rest_framework.generics import ListAPIView, CreateAPIView, RetrieveAPIView, UpdateAPIView,DestroyAPIView
+from rest_framework.authentication import SessionAuthentication
+from api.auth import CustomAuthentication
+from rest_framework.permissions import IsAuthenticated, AllowAny , IsAdminUser, IsAuthenticatedOrReadOnly,DjangoModelPermissions, DjangoModelPermissionsOrAnonReadOnly
+from api.permission import MyPermission
 
 class StudentList(ListAPIView):
     queryset = Student.objects.all()
@@ -191,6 +199,17 @@ class StudentList(ListAPIView):
 class StudentCreate(CreateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    authentication_classes = [BasicAuthentication]
+    authentication_classes = [SessionAuthentication]
+    authentication_classes = [CustomAuthentication]
+    permission_classes = [IsAuthenticated]
+    permission_classes = [AllowAny]
+    permission_classes = [IsAdminUser]
+    permission_classes = [IsAuthenticatedOrReadOnly]
+    permission_classes = [DjangoModelPermissions]
+    permission_classes = [DjangoModelPermissionsOrAnonReadOnly]
+    permission_classes = [MyPermission]
+
 
 class StudentRetrive(RetrieveAPIView):
     queryset = Student.objects.all()
@@ -207,14 +226,29 @@ class StudentDelete(DestroyAPIView):
 # List API View in One
 
 from rest_framework.generics import ListCreateAPIView, RetrieveUpdateAPIView, RetrieveUpdateDestroyAPIView
+from api.auth import CustomAuthentication
+from rest_framework.permissions import IsAuthenticated
+# from rest_framework.authentication import SessionAuthentication
+
+from rest_framework.permissions import IsAuthenticated
+from api.permission import MyPermission
+
+
 
 class StudentLC(ListCreateAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+    
 
 class StudentRUD(RetrieveUpdateDestroyAPIView):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
+    # authentication_classes = [TokenAuthentication]
+    # permission_classes = [IsAuthenticated]
+
+
 
 
 
@@ -239,7 +273,6 @@ class StudentViewSet(viewsets.ViewSet):
 
     def create(self, request):
         serializer = StudentSerializer(data=request.data)
-        print(request.data)
         if serializer.is_valid():
             serializer.save()
             return Response({'msg':'Data Created'}, status=status.HTTP_201_CREATED)
@@ -278,17 +311,10 @@ class StudentViewSet(viewsets.ViewSet):
 # Model Viewset
 
 from rest_framework import viewsets
-from rest_framework.authentication import BasicAuthentication
-from rest_framework.permissions import IsAuthenticated, AllowAny , IsAdminUser
-
 
 class StudentModelViewSet(viewsets.ModelViewSet):
     queryset = Student.objects.all()
     serializer_class = StudentSerializer
-    authentication_classes = [BasicAuthentication]
-    # permission_classes = [IsAuthenticated]
-    # permission_classes = [AllowAny]
-    permission_classes = [IsAdminUser]
     
 
 # Read only Model Viewset

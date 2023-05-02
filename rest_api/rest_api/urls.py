@@ -1,16 +1,13 @@
 from django.contrib import admin
 from django.urls import path, include
 from api import views
-
-from rest_framework.routers import DefaultRouter
-
-router = DefaultRouter()
+from api.authentication import CustomAuthToken
+from rest_framework_simplejwt.views import TokenObtainPairView, TokenRefreshView, TokenVerifyView
 
 # ViewSet
 # router.register('vstudentapi', views.StudentViewSet,basename='student')
 
 # Model View Set
-router.register('mstudentapi', views.StudentModelViewSet,basename='student')
 
 
 # router.register('mstudentapi', views.StudentReadonlyModelViewSet,basename='student')
@@ -19,6 +16,7 @@ router.register('mstudentapi', views.StudentModelViewSet,basename='student')
 # Function Based 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    
     path('studentapi/', views.student_api),
     path('studentapi/<int:pk>/', views.student_api),
 
@@ -54,10 +52,19 @@ urlpatterns = [
 # List API View One
 
     path('lcstudentapi/', views.StudentLC.as_view()),
-    path('rudstudentapi/<int:pk>/', views.StudentRUD.as_view()),
+    path('lcstudentapi/<int:pk>/', views.StudentRUD.as_view()),
+    # path('gettoken/', CustomAuthToken.as_view()),    
+    
+    path('getoken/', TokenObtainPairView.as_view(), name='token_obtain_pair'),
+    path('refreshtoken/', TokenRefreshView.as_view(), name='token_refresh'),
+    path('verifytoken/', TokenVerifyView.as_view(), name='token_verify'),
 
+    # http POST http://127.0.0.1:8000/gettoken/ username="User" password="zaqwsx123"
+    # python manage.py drf_create_token User
 
 # ViewSet - 12
-    path('', include(router.urls)),
+
+    path('auth/', include('rest_framework.urls', namespace='rest_framework')),
 
 ]
+
